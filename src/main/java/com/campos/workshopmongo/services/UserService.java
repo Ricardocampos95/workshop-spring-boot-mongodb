@@ -33,12 +33,12 @@ public class UserService {
 	}
 	
 	public User update(User obj) {
-		User entity = repository.findById(obj.getId()).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
+		User newObj = repository.findById(obj.getId()).orElseThrow(() -> new ObjectNotFoundException("Usuário não encontrado"));
 		
-		updateData(entity, obj);
+		updateData(newObj, obj);
 	
 		
-		return repository.save(entity);
+		return repository.save(newObj);
 		}
 	
 	public void deleteById(String id) {
@@ -48,12 +48,9 @@ public class UserService {
 		
 
 
-	public User updateData(User obj,User newObj) {
-		
+	public void updateData(User newObj,User obj) {
 		newObj.setName(obj.getName());
 		newObj.setEmail(obj.getEmail());
-		
-		return newObj;
 	}
 	
 	public User fromDto(UserDTO obj) {
