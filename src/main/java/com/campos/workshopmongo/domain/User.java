@@ -1,6 +1,8 @@
 package com.campos.workshopmongo.domain;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import org.springframework.data.annotation.Id;
@@ -23,6 +25,9 @@ public class User implements Serializable{
 		this.name = name;
 		this.email = email;
 	}
+	
+	
+	private List<Post> postList = new ArrayList<>();
 
 	public User() {
 	}
@@ -49,6 +54,14 @@ public class User implements Serializable{
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+	
+	public List<Post> getPostList() {
+		return postList;
+	}
+	
+	public void addPost(Post post) {
+		postList.add(post);
 	}
 
 	@Override
