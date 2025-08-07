@@ -1,5 +1,9 @@
 package com.campos.workshopmongo.services;
 
+
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,6 +30,15 @@ public class PostService {
 	
 	public List<Post> findByTitle(String text){
 		return repository.searchTitle(text);
+	}
+	
+	public List<Post> fullSearch(String text, LocalDate minDate, LocalDate maxDate){
+		
+		Instant start = minDate.atStartOfDay(ZoneId.systemDefault()).toInstant();
+		Instant end = maxDate.plusDays(1).atStartOfDay(ZoneId.systemDefault()).toInstant();
+		
+		return repository.fullSearch(text, start, end);
+
 	}
 	
 }

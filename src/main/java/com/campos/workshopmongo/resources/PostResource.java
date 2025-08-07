@@ -1,10 +1,14 @@
 package com.campos.workshopmongo.resources;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.campos.workshopmongo.domain.Post;
 import com.campos.workshopmongo.domain.User;
 import com.campos.workshopmongo.repository.UserRepository;
+import com.campos.workshopmongo.resources.exceptions.ResourceExceptionHandler;
 import com.campos.workshopmongo.resources.util.URL;
 import com.campos.workshopmongo.services.PostService;
 
@@ -22,12 +27,19 @@ import com.campos.workshopmongo.services.PostService;
 @RequestMapping(value = "/posts")
 public class PostResource {
 
+    private final ResourceExceptionHandler resourceExceptionHandler;
+
 	
 	@Autowired
 	private PostService service;
 	
 	@Autowired
 	private UserRepository userRepository;
+
+
+    PostResource(ResourceExceptionHandler resourceExceptionHandler) {
+        this.resourceExceptionHandler = resourceExceptionHandler;
+    }
 
 	
 	@GetMapping(value = "/{id}")
@@ -56,6 +68,19 @@ public class PostResource {
 	
 	}
 	
+	@GetMapping(value = "/fullsearch")
+	public ResponseEntity<List<Post>> fullSearch (
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate minDate,
+			@RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate maxDate,
+			@RequestParam String keyWord){
+		
+		if (minDate == null) minDate = LocalDate.of(1970, 1, 1);
+	    if (maxDate == null) maxDate = LocalDate.now();
+		
+		List<Post> list = service.fullSearch(keyWord, minDate, maxDate);
+		
+		return ResponseEntity.ok().body(list);
+	}
 	
 	
 	
